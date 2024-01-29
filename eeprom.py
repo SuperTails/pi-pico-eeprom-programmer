@@ -200,14 +200,17 @@ def main():
         prog='EEPROM Programmer',
         description='Interfaces with a DIY Raspberry Pi Pico EEPROM programmer')
 
-    parser.add_argument('-p', '--port')
+    parser.add_argument('filename')
+    parser.add_argument('port')
+
+    args = parser.parse_args()
 
     print('Connecting to programmer...')
-    prog = Programmer(Serial('/dev/tty.usbmodem11401', 115200, timeout=0.0), 0.5)
+    prog = Programmer(Serial(args.port, 115200, timeout=0.0), 0.5)
     print(prog.ping())
     print('Successfully connected!')
 
-    with open('/Users/salix/Code/byobc-debugger/asm.bin', 'rb') as f:
+    with open(args.filename, 'rb') as f:
         bin_data = f.read()
     chunks = get_chunks(bin_data)
 
@@ -259,8 +262,6 @@ def main():
             print('.', end='', flush=True)
     print()
     
-    print('Resetting CPU')
-
     print('Done!')
 
 if __name__ == '__main__':
